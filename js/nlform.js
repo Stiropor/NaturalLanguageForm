@@ -101,6 +101,7 @@
 			this.toggle.className = 'nl-field-toggle';
 			this.optionsList = document.createElement( 'ul' );
 			this.getinput = document.createElement( 'input' );
+			this.getinput.className = 'form-control';
 			this.getinput.setAttribute( 'type', this.elOriginal.getAttribute('type')? this.elOriginal.getAttribute('type'): '');
 			this.getinput.setAttribute( 'placeholder', this.elOriginal.getAttribute( 'placeholder' ) );
 			this.getinput.setAttribute( 'value', this.elOriginal.getAttribute('value')? this.elOriginal.getAttribute('value'): '');
@@ -136,7 +137,7 @@
 			}
 			else if( this.type === 'input' ) {
 				this.getinput.addEventListener( 'keydown', function( ev ) {
-					if ( ev.keyCode == 13 ) {
+					if ( ev.keyCode == 13 || ev.keyCode == 27 ) {
 						self.close();
 					}
 				} );
@@ -153,6 +154,7 @@
 			this.form.fldOpen = this.pos;
 			var self = this;
 			this.fld.className += ' nl-field-open';
+			this.getinput.focus();
 			this._checkPosition()
 		},
 		_checkPosition: function() {
@@ -199,18 +201,26 @@
 					// update original select element´s value
 					this.elOriginal.value = this.elOriginal.children[ this.selectedIdx ].value;
 					if ("createEvent" in document) {
-					    var evt = document.createEvent("HTMLEvents");
-					    evt.initEvent("change", false, true);
-					    this.elOriginal.dispatchEvent(evt);
+						var evt = document.createEvent("HTMLEvents");
+						evt.initEvent("change", false, true);
+						this.elOriginal.dispatchEvent(evt);
 					}
 					else
-					    this.elOriginal.fireEvent("change");
+						this.elOriginal.fireEvent("change");
 				}
 			}
 			else if( this.type === 'input' ) {
 				this.getinput.blur();
 				this.toggle.innerHTML = this.getinput.value.trim() !== '' ? this.getinput.value : this.getinput.getAttribute( 'placeholder' );
 				this.elOriginal.value = this.getinput.value;
+
+				if ("createEvent" in document) {
+					var evt = document.createEvent("HTMLEvents");
+					evt.initEvent("change", false, true);
+					this.elOriginal.dispatchEvent(evt);
+				}
+				else
+					this.elOriginal.fireEvent("change");
 			}
 		}
 	};
